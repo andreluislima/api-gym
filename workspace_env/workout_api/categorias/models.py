@@ -8,5 +8,4 @@ class CategoriaModel(BaseModel):
 
     pk_id: Mapped[int] = mapped_column(Integer, primary_key=True)
     nome: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
-
-    atletas: Mapped[list["AtletaModel"]] = relationship("AtletaModel", back_populates="categoria")
+    atletas: Mapped[list["AtletaModel"]] = relationship(back_populates="categoria")
