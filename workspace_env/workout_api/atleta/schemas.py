@@ -3,10 +3,14 @@ from typing import Annotated
 
 from workspace_env.workout_api.contrib.schemas import BaseSchema
 
-class Atleta(BaseSchema):
+class AtletaIn(BaseSchema):
     nome: Annotated[str, Field(description='Nome do Atleta',max_length=50)]
     cpf: Annotated[str, Field(description='CPF do Atleta',max_length=11)]
     idade: Annotated[str, Field(description='Idade do Atleta')]
     peso: Annotated[PositiveFloat, Field(description='Peso do Atleta')]
     altura: Annotated[PositiveFloat, Field(description='Altura do Atleta')]
     genero: Annotated[str, Field(description='Gênero do Atleta', max_length=1)]
+    
+
+class AtletaOut(AtletaIn):
+    pass
