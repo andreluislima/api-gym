@@ -24,6 +24,7 @@ async def post(
     
     db_session.add(centroTreinamentoModel)
     await db_session.commit()
+    await db_session.refresh(centroTreinamentoModel)
     
     return centroTreinamentoOut
     

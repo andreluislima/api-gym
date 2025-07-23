@@ -4,7 +4,7 @@ from pydantic import UUID4, Field
 from typing import Annotated
 
 class CategoriaIn(BaseSchema):
-    nome:Annotated[str, Field(description='Nome da Categoria', max_length=10)]
+    nome:Annotated[str, Field(description='Nome da Categoria', max_length=30)]
     
 
 class CategoriaOut(CategoriaIn):
