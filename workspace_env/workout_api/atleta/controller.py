@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from uuid import uuid4
+from uuid import UUID, uuid4
 from fastapi import APIRouter, Body, HTTPException, status
 from sqlalchemy import select
 from workout_api.atleta.schemas import AtletaIn, AtletaOut
@@ -75,3 +75,24 @@ async def query(db_session: DatabaseDependency) -> list[AtletaOut]:  # type: ign
     atletas: list[AtletaOut] = (await db_session.execute(select(AtletaModel))).scalars().all() # type: ignore
     
     return [AtletaOut.model_validate(atleta) for atleta in atletas]     
+
+
+    
+@router.get(
+    path='/{id}',
+    summary='Consultar atleta pelo Id',
+    status_code=status.HTTP_200_OK,
+    response_model=AtletaOut
+)
+async def query(id: UUID, db_session: DatabaseDependency) -> AtletaOut:  # type: ignore
+    
+    atleta: AtletaOut = (
+        await db_session.execute(select(AtletaModel).filter_by(id=id))).scalars().first() # type: ignore
+    
+    if not atleta:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail=f'Atleta não encontrado para o id {id}'
+        )
+    
+    return atleta
