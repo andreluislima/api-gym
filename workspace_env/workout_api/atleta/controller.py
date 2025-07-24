@@ -54,10 +54,10 @@ async def post(
         db_session.add(atleta_model)
         await db_session.commit()
     
-    except Exception:
+    except Exception as e:
         raise HTTPException(
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f'Erro ao inserir os dados no banco.'
+            detail=f'Erro ao inserir os dados no banco. {str(e)}'
         )
     
     return atleta_out

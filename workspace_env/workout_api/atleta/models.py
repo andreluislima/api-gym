@@ -14,7 +14,7 @@ class AtletaModel(BaseModel):
     peso: Mapped[float] = mapped_column(Float, nullable=False)
     altura: Mapped[float] = mapped_column(Float, nullable=False)
     genero: Mapped[str] = mapped_column(String, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
     categoria_id: Mapped[int] = mapped_column(ForeignKey("categorias.pk_id"))
     categoria: Mapped["CategoriaModel"] = relationship("CategoriaModel", back_populates="atletas")
