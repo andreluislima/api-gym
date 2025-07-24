@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from uuid import UUID, uuid4
 from fastapi import APIRouter, Body, HTTPException, status
 from sqlalchemy import select
-from workout_api.atleta.schemas import AtletaIn, AtletaOut
+from workout_api.atleta.schemas import AtletaIn, AtletaOut, AtletaUpdate
 from workout_api.contrib.dependecies import DatabaseDependency
 from workout_api.atleta.models import AtletaModel
 from workout_api.categorias.models import CategoriaModel
@@ -96,3 +96,50 @@ async def query(id: UUID, db_session: DatabaseDependency) -> AtletaOut:  # type:
         )
     
     return atleta
+
+@router.patch(
+    path='/{id}',
+    summary='Editar atleta pelo Id',
+    status_code=status.HTTP_200_OK,
+    response_model=AtletaOut
+)
+async def query(id: UUID, db_session: DatabaseDependency, atleta_up: AtletaUpdate = Body(...)) -> AtletaOut:  # type: ignore
+    atleta: AtletaOut = (
+        await db_session.execute(select(AtletaModel).filter_by(id=id))).scalars().first() # type: ignore
+    
+    if not atleta:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail=f'Atleta não encontrado para o id {id}'
+        )
+    
+    atleta_update = atleta_up.model_dump(exclude_unset=True)
+    for key, value in atleta_update.items():
+        setattr(atleta, key, value)
+    
+    await db_session.commit()
+    await db_session.refresh(atleta)
+
+    return atleta
+
+
+@router.delete(
+    path='/{id}',
+    summary='Deletar atleta pelo Id',
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def query(id: UUID, db_session: DatabaseDependency) -> None:  # type: ignore
+    
+    atleta: AtletaOut = (
+        await db_session.execute(select(AtletaModel).filter_by(id=id))).scalars().first() # type: ignore
+    
+    if not atleta:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail=f'Atleta não encontrado para o id {id}'
+        )
+    
+    await db_session.delete(atleta)
+    await db_session.commit()
+    
+    
