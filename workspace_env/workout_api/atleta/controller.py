@@ -64,6 +64,14 @@ async def post(
 
 
 
+@router.get(
+    path='/',
+    summary='Consultar todas os atletas',
+    status_code=status.HTTP_200_OK,
+    response_model=list[AtletaOut]
+)
+async def query(db_session: DatabaseDependency) -> list[AtletaOut]:  # type: ignore
     
-            
-     
+    atletas: list[AtletaOut] = (await db_session.execute(select(AtletaModel))).scalars().all() # type: ignore
+    
+    return [AtletaOut.model_validate(atleta) for atleta in atletas]     
